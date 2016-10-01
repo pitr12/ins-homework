@@ -8,6 +8,8 @@
 ## - only 1 queen in 1 row (solved by representation)
 ## - only 1 queen in each col (array values must be unique)
 ## - only one queen on diagonal (for all values val+index and val-index must be unique)
+#
+# run by ruby ./queens.rb
 
 class Queens
 
