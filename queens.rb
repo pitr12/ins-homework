@@ -16,48 +16,36 @@ class Queens
   def self.init(size)
     result = []
     (0..size-1).each do |val|
-      index = -1
-      arr = Array.new(size) do |x|
-        index += 1
-        index == 0 ? x = val : x = -1
-      end
-      result << arr
+      result << Array.new(1, val)
     end
     result
   end
 
-  def self.generate_solutions_for_depth(depth, solutions)
+  def self.generate_solutions_for_depth(depth, solutions, size)
     new_solutions = []
-    input_size = solutions[0].size - 1
     solutions.each do |solution|
-      (0..input_size).each do |val|
-        index = -1
-        new_sol = solution.map do |x|
-          index += 1
-          index == depth ? val : x
+      (0..size-1).each do |val|
+        solution[depth] = val
+        if is_correct?(solution, depth + 1)
+          new_solutions << solution.clone
         end
-        new_solutions << new_sol if is_correct?(new_sol)
       end
     end
-
     new_solutions
   end
 
-  def self.is_correct? (solution)
-    tmp_sol = solution.map {|x| x}
-    tmp_sol.delete(-1)
-    size = tmp_sol.size
-    return false if size != tmp_sol.uniq.size
+  # [2,0,3,1]
+
+  def self.is_correct? (solution, size)
+    return false if size != solution.uniq.size
     sum_values = []
     reduce_values = []
-    tmp_sol.each_with_index do |val, index|
+    solution.each_with_index do |val, index|
       sum_values << val + index
       reduce_values << val - index
     end
     size != sum_values.uniq.size || size != reduce_values.uniq.size ? false : true
-
   end
-
 end
 
 # get user input (size of required solution) and check if user input is number
@@ -71,13 +59,12 @@ until size.is_a? (Fixnum) do
   end
 end
 
-# generate initial solution (Array of inserted size filled with -1 values)
+# generate initial solution
 puts "Computing solutions...\n"
 solutions = Queens.init(size)
 
 (1..size-1).each do |depth|
-  solutions = Queens.generate_solutions_for_depth(depth, solutions)
+  solutions = Queens.generate_solutions_for_depth(depth, solutions, size)
 end
 
 puts solutions.size
-
